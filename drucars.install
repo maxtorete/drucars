@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function drucars_schema() {
+  $schema = array();
+
+  $schema['drucars'] = array(
+    'description' => 'Table that stores cars info.',
+    'fields' => array(
+      'cid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique car ID.',
+      ),
+      'model' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'default' => '',
+        'not null' => TRUE,
+        'description' => 'The car model.',
+      ),
+      'license_plate' => array(
+        'type' => 'varchar',
+        'length' => '7',
+        'default' => '',
+        'not null' => TRUE,
+        'description' => 'The car license plate.',
+      ),
+      'rented' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Mark if the car is rented.',
+      ),
+			'init_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+  			'description' => 'The Unix timestamp when the car has been rented.',
+      ),
+  		'end_date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+  			'description' => 'The Unix timestamp when the car has come back.',
+      ),  
+    ),
+    'primary key' => array('cid'),
+    'unique keys' => array(
+  	  'license_plate' => array(
+  		  'license_plate'
+  		),
+    ),
+  );
+
+  return $schema;
+}
