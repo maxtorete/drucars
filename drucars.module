@@ -218,6 +218,8 @@ function drucars_theme($existing, $type, $theme, $path) {
 
 function drucars_load_cars() {
   
+  $cars = array();
+  
   $rows = db_select('drucars', 'd')
     ->extend('PagerDefault')
     ->fields('d')
