@@ -74,6 +74,14 @@ class Car {
     }
   }
   
+  function delete() {
+    db_delete('drucars')
+      ->condition('cid',$this->cid,'=')
+      ->execute();
+    
+    $this->init();
+  }
+  
   function getCid() {
     return $this->cid;
   }

@@ -66,7 +66,7 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
   	'#suffix' => '</div>',
   );
 
-  if ($car->isRented() || !empty($form_state['values']['rented'])) {
+  if (!empty($form_state['values']['rented']) || !$form_state['rebuild'] && $car->isRented()) {
     $form['group_rented']['#type'] = 'fieldset';
     $form['group_rented']['#title'] = t('Renting dates');
     $form['group_rented']['#collapsible'] = TRUE;
@@ -102,9 +102,15 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
 
   }
 
-  $form['submit'] = array(
+  $form['send'] = array(
     '#type' => 'submit', 
     '#value' => t('Send'),
+    '#states' => array(
+      'enabled' => array(
+        ':input[name="model"]' => array('filled' => TRUE),
+        ':input[name="license_plate"]' => array('filled' => TRUE),
+      ),
+    ),
   );
 
   return $form;
@@ -121,7 +127,7 @@ function drucars_edit_car_form_validate($form, &$form_state) {
     $init_date = DateUtil::getTimestamp($form_state['values']['init_date']);
     $end_date = DateUtil::getTimestamp($form_state['values']['end_date']);
 
-    if ($end_date + DateUtil::getMicrosecondsOnDays(2) < $init_date) {
+    if ($end_date < $init_date + DateUtil::getMicrosecondsOnDays(2)) {
       form_set_error('end_date', t('End date must be two days greater than init date.'));
     }
   }
@@ -144,6 +150,40 @@ function drucars_edit_car_form_submit($form, &$form_state) {
 
   $form_state['redirect'] = 'drucars/' . $car->getCid();
 
+}
+
+function drucars_delete_car_form($form, &$form_state, $cid) {
+  $car = new Car($cid);
+
+  $form['cid'] = array(
+    '#type' => 'value', 
+    '#value' => $cid
+  );
+  
+  $form['delete'] = array(
+    '#type' => 'value', 
+    '#value' => TRUE
+  );
+  
+  return confirm_form($form,
+    NULL,
+    'drucars/' . $cid,
+    t('Are you sure you want to delete the car %car? This action cannot be undone',
+      array('%car' => $car->getLicensePlate())),
+    t('Delete'),
+    t('Cancel'));
+}
+
+function drucars_delete_car_form_submit($form, &$form_state) {
+  
+  $cid = $form_state['values']['cid'];
+  $car = new Car($cid);
+  
+  $car->delete();
+  
+  drupal_set_message(t('Car deleted successfully.'));
+  
+  $form_state['redirect'] = 'drucars';
 }
 
 function drucars_rented_checkbox_callback($form, $form_state) {
