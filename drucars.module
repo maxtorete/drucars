@@ -28,11 +28,13 @@ function drucars_menu() {
     'title' => 'Drucars',
     'page callback' => 'drucars_main_page',
     'access arguments' => array('drucars view'),
+    'type' => MENU_NORMAL_ITEM,
     'file' => 'inc/drucars.ui.inc',
   );
   
   $items['drucars/list'] = array(
     'title' => 'List cars',
+  'page callback' => 'drucars_main_page',
     'access arguments' => array('drucars view'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 0,
@@ -49,15 +51,18 @@ function drucars_menu() {
   );
   
   $items['drucars/%'] = array(
+    'title' => 'Drucars',
+    'title callback' => 'drucars_view_car_title',
+    'title arguments' => array(1),
     'page callback' => 'drucars_view_car',
     'page arguments' => array(1),
     'access arguments' => array('drucars view'),
+    'type' => MENU_NORMAL_ITEM,
     'file' => 'inc/drucars.ui.inc',
   );
   
   $items['drucars/%/view'] = array(
     'title' => 'View',
-    'access arguments' => array('drucars view'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 0,
   );
@@ -77,12 +82,17 @@ function drucars_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('drucars_delete_car_form', 1),
     'access arguments' => array('drucars edit'),
-    'weight' => 2,
     'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
     'file' => 'inc/drucars.ui.inc',
   );
   
   return $items;
+}
+
+function drucars_view_car_title($cid) {
+  $car = new Car($cid);
+  return $car->getLicensePlate() . ' - ' . $car->getModel();
 }
 
 /**

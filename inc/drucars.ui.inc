@@ -20,7 +20,6 @@ function drucars_view_car($cid) {
 
 function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
 
-  $form = array();
   $car = new Car($cid);
 
   if (!$car->isNew()) {
@@ -143,7 +142,7 @@ function drucars_edit_car_form_submit($form, &$form_state) {
 
   drupal_set_message(t('Car saved successfully.'));
 
-  $form_state['redirect'] = 'drucars/view/' . $car->getCid();
+  $form_state['redirect'] = 'drucars/' . $car->getCid();
 
 }
 
