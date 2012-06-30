@@ -6,10 +6,17 @@
 function drucars_schema() {
   $schema = array();
 
+  // Cada esquema define uno o más índices, cada uno de los cuales
+  // generará una tabla en nuesta base de datos.
+  // Más info aquí: http://drupal.org/node/146939
   $schema['drucars'] = array(
-    'description' => 'Table that stores cars info.',
+    'description' => 'Table that stores cars info.',  
+    // Creamos un nuevo array en el índice fields
+    // En él definimos cada uno de los campos de nuestra tabla
     'fields' => array(
+      // De nuevo, cada campo es un índice que apunta a un nuevo array
       'cid' => array(
+        // Más info sobre los tipos aquí: http://drupal.org/node/159605
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
@@ -37,24 +44,24 @@ function drucars_schema() {
         'default' => 0,
         'description' => 'Mark if the car is rented.',
       ),
-			'init_date' => array(
+      'init_date' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
-  			'description' => 'The Unix timestamp when the car has been rented.',
+        'description' => 'The Unix timestamp when the car has been rented.',
       ),
-  		'end_date' => array(
+      'end_date' => array(
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
-  			'description' => 'The Unix timestamp when the car has come back.',
+        'description' => 'The Unix timestamp when the car has come back.',
       ),  
     ),
     'primary key' => array('cid'),
     'unique keys' => array(
-  	  'license_plate' => array(
-  		  'license_plate'
-  		),
+      'license_plate' => array(
+        'license_plate'
+      ),
     ),
   );
 

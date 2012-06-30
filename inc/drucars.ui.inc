@@ -122,7 +122,7 @@ function drucars_edit_car_form_validate($form, &$form_state) {
     $init_date = DateUtil::getTimestamp($form_state['values']['init_date']);
     $end_date = DateUtil::getTimestamp($form_state['values']['end_date']);
 
-    if ($end_date < $init_date) {
+    if ($end_date + DateUtil::getMicrosecondsOnDays(2) < $init_date) {
       form_set_error('end_date', t('End date must be two days greater than init date.'));
     }
   }
@@ -138,11 +138,6 @@ function drucars_edit_car_form_submit($form, &$form_state) {
   $cid = isset($form_state['values']['cid']) ? $form_state['values']['cid'] : NULL;
   $car = new Car($cid);
   $car->loadPropertiesFromObject((Object)$form_state['values']);
-
-  if ($car->isRented()) {
-    $car->setInitDate($form_state['values']['init_date']);
-    $car->setEndDate($form_state['values']['end_date']);
-  }
 
   $car->save();
 

@@ -31,11 +31,11 @@ function drucars_menu() {
     'file' => 'inc/drucars.ui.inc',
   );
   
-  $items['drucars/view/%'] = array(
-    'page callback' => 'drucars_view_car',
-    'page arguments' => array(2),
+  $items['drucars/list'] = array(
+    'title' => 'List cars',
     'access arguments' => array('drucars view'),
-    'file' => 'inc/drucars.ui.inc',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
   );
   
   $items['drucars/add'] = array(
@@ -43,22 +43,42 @@ function drucars_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('drucars_edit_car_form'),
     'access arguments' => array('drucars edit'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
     'file' => 'inc/drucars.ui.inc',
   );
   
-  $items['drucars/edit/%'] = array(
-    'title' => 'Add a car',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('drucars_edit_car_form', 2),
-    'access arguments' => array('drucars edit'),
+  $items['drucars/%'] = array(
+    'page callback' => 'drucars_view_car',
+    'page arguments' => array(1),
+    'access arguments' => array('drucars view'),
     'file' => 'inc/drucars.ui.inc',
   );
   
-  $items['drucars/delete/%'] = array(
-    'title' => 'Delete a car',
+  $items['drucars/%/view'] = array(
+    'title' => 'View',
+    'access arguments' => array('drucars view'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  
+  $items['drucars/%/edit'] = array(
+    'title' => 'Edit',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('drucars_delete_car_form', 2),
+    'page arguments' => array('drucars_edit_car_form', 1),
     'access arguments' => array('drucars edit'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+    'file' => 'inc/drucars.ui.inc',
+  );
+  
+  $items['drucars/%/delete'] = array(
+    'title' => 'Delete',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drucars_delete_car_form', 1),
+    'access arguments' => array('drucars edit'),
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
     'file' => 'inc/drucars.ui.inc',
   );
   

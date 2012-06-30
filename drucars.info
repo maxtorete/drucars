@@ -1,4 +1,4 @@
-; See http://drupal.org/node/542202 for further instructions writing .info files
+; Visita http://drupal.org/node/542202 para más detalles sobre archivos .info
 name = Drucars
 description = Adds the ability to manage a rent a car business on Drupal.
 core = 7.x

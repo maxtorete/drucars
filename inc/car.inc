@@ -23,10 +23,11 @@ class Car {
     $this->license_plate = '';
     $this->rented = FALSE;
     $this->init_date = time();
-    $this->end_date = time() + 2 * 24 * 60 * 60;
+    $this->end_date = time() + DateUtil::getMicrosecondsOnDays(2);
   }
   
   function load($cid) {
+    
     $car = db_select('drucars','d')
       ->fields('d')
       ->condition('cid',$cid,'=')
@@ -38,7 +39,10 @@ class Car {
   
   function loadPropertiesFromObject($car) {
     
-    $this->cid = $car->cid;
+    if (isset($car->cid)) {
+      $this->cid = $car->cid;
+    }
+    
     $this->model = $car->model;
     $this->license_plate = $car->license_plate;
     $this->rented = $car->rented;

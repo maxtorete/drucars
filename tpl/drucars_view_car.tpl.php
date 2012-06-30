@@ -1,4 +1,4 @@
-<h1 id="page-title"><?php print $car->getModel() . ' - ' . $car->getModel(); ?></h1>
+<h1 id="page-title"><?php print $car->getLicensePlate() . ' - ' . $car->getModel(); ?></h1>
 <?php if ($car->isRented()):?>
 <h2><?php print t('This car is rented'); ?></h2>
 <ul>
