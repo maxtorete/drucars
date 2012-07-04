@@ -24,8 +24,8 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
 
   if (!$car->isNew()) {
     $form['cid'] = array(
-      '#type' => 'hidden',
-      '#default_value' => $car->getCid(),
+      '#type' => 'value',
+      '#value' => $car->getCid(),
     );
   }
 
@@ -157,12 +157,12 @@ function drucars_delete_car_form($form, &$form_state, $cid) {
 
   $form['cid'] = array(
     '#type' => 'value', 
-    '#value' => $cid
+    '#value' => $cid,
   );
   
   $form['delete'] = array(
     '#type' => 'value', 
-    '#value' => TRUE
+    '#value' => TRUE,
   );
   
   return confirm_form($form,
