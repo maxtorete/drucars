@@ -4,7 +4,7 @@
  * Implements hook_permission().
  */
 function drucars_permission() {
-  
+
   $permission = array(
     'drucars view' => array(
       'title' => t('View drucars items'),
@@ -15,7 +15,7 @@ function drucars_permission() {
       'description' => t('User with this access right can manage drucars items.'),
     ),
   );
-  
+
   return $permission;
 }
 
@@ -23,7 +23,7 @@ function drucars_permission() {
  * Implements hook_menu().
  */
 function drucars_menu() {
-  
+
   $items['drucars'] = array(
     'title' => 'Drucars',
     'page callback' => 'drucars_main_page',
@@ -31,7 +31,7 @@ function drucars_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => 'inc/drucars.ui.inc',
   );
-  
+
   $items['drucars/list'] = array(
     'title' => 'List cars',
   'page callback' => 'drucars_main_page',
@@ -39,7 +39,7 @@ function drucars_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 0,
   );
-  
+
   $items['drucars/add'] = array(
     'title' => 'Add a car',
     'page callback' => 'drupal_get_form',
@@ -49,7 +49,7 @@ function drucars_menu() {
     'weight' => 1,
     'file' => 'inc/drucars.ui.inc',
   );
-  
+
   $items['drucars/%'] = array(
     'title' => 'Drucars',
     'title callback' => 'drucars_view_car_title',
@@ -60,13 +60,13 @@ function drucars_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => 'inc/drucars.ui.inc',
   );
-  
+
   $items['drucars/%/view'] = array(
     'title' => 'View',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 0,
   );
-  
+
   $items['drucars/%/edit'] = array(
     'title' => 'Edit',
     'page callback' => 'drupal_get_form',
@@ -76,7 +76,7 @@ function drucars_menu() {
     'weight' => 1,
     'file' => 'inc/drucars.ui.inc',
   );
-  
+
   $items['drucars/%/delete'] = array(
     'title' => 'Delete',
     'page callback' => 'drupal_get_form',
@@ -86,7 +86,7 @@ function drucars_menu() {
     'weight' => 2,
     'file' => 'inc/drucars.ui.inc',
   );
-  
+
   return $items;
 }
 
@@ -112,26 +112,28 @@ function drucars_theme($existing, $type, $theme, $path) {
 }
 
 function drucars_load_cars() {
-  
+
   $cars = array();
-  
+
   $rows = db_select('drucars', 'd')
     ->extend('PagerDefault')
     ->fields('d')
     ->limit(10)
     ->execute()
 	  ->fetchAll();
-  
+
   foreach ($rows as $row) {
     $car = new Car();
     $car->loadPropertiesFromObject($row);
     $cars[] = $car;
   }
-  
-  $result = array(
-    'cars' => $cars,
-    'pager' => theme('pager'),
-  );
 
-  return $result;
+  return $cars;
+}
+
+function drucars_load_cars_with_pager() {
+  return array(
+   'cars' => drucars_load_cars(),
+   'pager' => theme('pager'),
+  );
 }
