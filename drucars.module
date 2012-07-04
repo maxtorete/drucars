@@ -5,8 +5,11 @@
  */
 function drucars_permission() {
   
+  // Creamos un array que tendrá un índice por cada permiso
   $permission = array(
     'drucars view' => array(
+      // Para más información sobre hook_permission: 
+      // http://api.drupal.org/api/drupal/modules!system!system.api.php/function/hook_permission/7
       'title' => t('View drucars items'),
       'description' => t('User with this access right can view drucars items.'),
     ),
@@ -24,25 +27,40 @@ function drucars_permission() {
  */
 function drucars_menu() {
   
+  // Cada índice del array corresponde a una ruta.
   $items['drucars'] = array(
+    // No usar la función t() con el título, ya lo hace Drupal.
     'title' => 'Drucars',
+    // Parámetro que indica la función que devuelve el contenido de la página.
     'page callback' => 'drucars_main_page',
+    // Sólo los usuarios con los permisos definidos verán y accederán al item.
+    // Podemos especificar más de un permiso añadiendo índices al array.
     'access arguments' => array('drucars view'),
+    // Este es el tipo por defecto, y crea un item en el menú de navegación.
     'type' => MENU_NORMAL_ITEM,
+    // Este parámetro es opcional,
+    // sólo lo usaremos si nuestro page callback está en un archivo externo.
     'file' => 'inc/drucars.ui.inc',
   );
   
+  // Este item es algo especial, ya que es necesario para mostrar pestañas.
+  // Para ello, este item necesita un MENU_NORMAL_ITEM como padre.
+  // Apunta al mismo contenido que la URL padre.
   $items['drucars/list'] = array(
+    // Texto que aparece en la pestaña
     'title' => 'List cars',
-  'page callback' => 'drucars_main_page',
     'access arguments' => array('drucars view'),
+    // La palabra DEFAULT indica que es la pestaña que se mostrará por defecto.
     'type' => MENU_DEFAULT_LOCAL_TASK,
+    // El peso define el orden.
     'weight' => 0,
   );
   
   $items['drucars/add'] = array(
     'title' => 'Add a car',
+    // Función de Drupal que contruye el formulario a partir de un array.
     'page callback' => 'drupal_get_form',
+    // Argumentos que se pasarán a la función definida en 'page callback'.
     'page arguments' => array('drucars_edit_car_form'),
     'access arguments' => array('drucars edit'),
     'type' => MENU_LOCAL_TASK,
@@ -50,9 +68,18 @@ function drucars_menu() {
     'file' => 'inc/drucars.ui.inc',
   );
   
+  // Definimos la ruta con un comodín. 
+  // Dará respuesta a cualquier ruta que siga el patrón drucars/XXX,
+  // siempre que no coincida con otra ruta registrada.
   $items['drucars/%'] = array(
     'title' => 'Drucars',
+    // Función que devuelve una cadena título de la página.
     'title callback' => 'drucars_view_car_title',
+    // Argumentos para la función definida en 'title callback'.
+    // Se pueden especificar argumentos hardcoded como cadenas,
+    // o números enteros que corresponden al elemento de la ruta en ese orden,
+    // empezando a contar desde cero.
+    // En este caso recibe el valor del comodín.
     'title arguments' => array(1),
     'page callback' => 'drucars_view_car',
     'page arguments' => array(1),

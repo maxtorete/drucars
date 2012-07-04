@@ -57,6 +57,7 @@ function drucars_schema() {
         'description' => 'The Unix timestamp when the car has come back.',
       ),  
     ),
+    // Información sobre índices y claves aquí: http://drupal.org/node/146939
     'primary key' => array('cid'),
     'unique keys' => array(
       'license_plate' => array(
