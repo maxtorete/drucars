@@ -18,7 +18,7 @@ function drucars_permission() {
       'description' => t('User with this access right can manage drucars items.'),
     ),
   );
-  
+
   return $permission;
 }
 
@@ -55,7 +55,7 @@ function drucars_menu() {
     // El peso define el orden.
     'weight' => 0,
   );
-  
+
   $items['drucars/add'] = array(
     'title' => 'Add a car',
     // Función de Drupal que contruye el formulario a partir de un array.
@@ -69,7 +69,7 @@ function drucars_menu() {
   );
   
   // Definimos la ruta con un comodín. 
-  // Dará respuesta a cualquier ruta que siga el patrón drucars/XXX,
+  // Dará respuesta a cualquier ruta que siga el patrón drucars/XX,
   // siempre que no coincida con otra ruta registrada.
   $items['drucars/%'] = array(
     'title' => 'Drucars',
@@ -87,13 +87,13 @@ function drucars_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => 'inc/drucars.ui.inc',
   );
-  
+
   $items['drucars/%/view'] = array(
     'title' => 'View',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 0,
   );
-  
+
   $items['drucars/%/edit'] = array(
     'title' => 'Edit',
     'page callback' => 'drupal_get_form',
@@ -103,7 +103,7 @@ function drucars_menu() {
     'weight' => 1,
     'file' => 'inc/drucars.ui.inc',
   );
-  
+
   $items['drucars/%/delete'] = array(
     'title' => 'Delete',
     'page callback' => 'drupal_get_form',
@@ -113,7 +113,7 @@ function drucars_menu() {
     'weight' => 2,
     'file' => 'inc/drucars.ui.inc',
   );
-  
+
   return $items;
 }
 
@@ -139,26 +139,28 @@ function drucars_theme($existing, $type, $theme, $path) {
 }
 
 function drucars_load_cars() {
-  
+
   $cars = array();
-  
+
   $rows = db_select('drucars', 'd')
     ->extend('PagerDefault')
     ->fields('d')
     ->limit(10)
     ->execute()
 	  ->fetchAll();
-  
+
   foreach ($rows as $row) {
     $car = new Car();
     $car->loadPropertiesFromObject($row);
     $cars[] = $car;
   }
-  
-  $result = array(
-    'cars' => $cars,
-    'pager' => theme('pager'),
-  );
 
-  return $result;
+  return $cars;
+}
+
+function drucars_load_cars_with_pager() {
+  return array(
+   'cars' => drucars_load_cars(),
+   'pager' => theme('pager'),
+  );
 }

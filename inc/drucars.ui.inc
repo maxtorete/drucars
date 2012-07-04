@@ -2,7 +2,7 @@
 
 function drucars_main_page() {
   
-  $cars = drucars_load_cars();
+  $cars = drucars_load_cars_with_pager();
   
   $output = theme('drucars_list_cars', array('cars' => $cars['cars'], 'pager' => $cars['pager']));
   
