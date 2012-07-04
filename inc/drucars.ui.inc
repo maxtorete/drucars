@@ -58,7 +58,7 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
     '#ajax' => array(
       'wrapper' => 'group_rented_wrapper', 
       'callback' => 'drucars_rented_checkbox_callback',
-  ),
+    ),
   );
 
   $form['group_rented'] = array(
