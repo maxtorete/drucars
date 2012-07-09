@@ -1,0 +1,230 @@
+<?php
+
+/**
+ * @file
+ * Este fichero implementa el hook hook_resources, el cual define las operaciones que va a tener nuestro servicio.
+ * Cuando proceda, implementaremos también el callback que se encarga de gestionar la autenticación en nuestro servicio.
+ */
+
+/**
+ *
+ * hook_resources()
+ * En este hook se configuran las diferentes operaciones que tendrá nuestro servicio. Estas operaciones
+ * están divididas en cuatro grandes bloques, cada uno de los cuales constituye un array.
+ *
+ * 	Operaciones CRUD + Operación Index
+ *  Targeted Actions
+ * 	Actions
+ * 	Relationships
+ *
+ * Operaciones CRUD: operaciones básicas de crear (create), leer (retrieve), actualizar (update) y borrar (delete)
+ * Recordad que los verbos http correspondientes a estas acciones son, respectivamente:
+ * GET, POST, PUT y DELETE.
+ *
+ * Operación Index: esta operación es utilizada para obtener una relación de recursos.
+ * El verbo de esta operación es GET.
+ *
+ * Targeted actions: Las targeted actions son operaciones que se realizan individualmente a un recurso. Por ejemplo,
+ * implementamos una operación para marcar como alquilado un drucar de la siguiente forma /endpoint/<drucarID>/rent.
+ * El verbo de estas operaciones es POST.
+ *
+ * Actions: Las actions son operaciones destinadas a realizar acciones directamente sobre los recursos, no
+ * de manera individual como las targeted actions. En el caso de drucars, implementaremos una acción de alquilar todos
+ * /endpoint/rentAll.
+ * El verbo de estas operaciones es POST.
+ *
+ * Relationships: estas operaciones son utilizadas para obtener otros recursos diferentes que están relacionados
+ * con el recurso solicitado. Por ejemplo, recursos relacionados con un drucar podrían ser los extras del vehículo
+ * /endpoint/<drucarID>/extras o las personas que lo han alquilado /endpoint/<drucarID>/users.
+ * El verbo de estas operaciones es GET.
+ *
+ * Como indicábamos arriba, cada bloque de operaciones es un array, y dentro de este array están definidas las operaciones.
+ * Por tanto, nuestro hook_resources devolverá un array con esta estructura
+ *
+ * return array(
+ * 	'recurso' => array(
+ *	  'retrieve' => array(),
+ *    'create' => array(),
+ *    'update' => array(),
+ *    'delete' => array(),
+ *    'index' => array(),
+ *    'targeted_actions' => array(
+ *      'operacion_1' => array(),
+ *      'operacion_2' => array(),
+ *    ),
+ *    'relationships' => array(
+ *      'operacion_1' => array(),
+ *      'operacion_2' => array(),
+ *    ),
+ * 	),
+ * );
+ *
+ * Una vez conocida la estructura que ha de retornar nuestro hook_resources, necesitamos definir cada una de las operaciones.
+ * Como podéis comprobar, cada operación está definida en un array que lleva la siguiente estructura
+ *
+ * 'operacion' => array(
+ *   'file' => array('type' => 'inc', 'module' => 'NOMBRE_DE_NUESTRO_MODULO'),
+ *   'callback' => '_NOMBRE_FUNCION',
+ *   'args' => array(
+ *     array(
+ *       'name' => 'parametro1',
+ *       'optional' => TRUE | FALSE,
+ *       'type' => 'int' | 'string' | 'array',
+ *       'source' => array('path' => index_path [>0]) | 'data' | array('params' => 'nombre_del_parametro'),
+ *       'default value' => 'value',
+ *     ),
+ *     array(
+ *           'name' => 'parametro2',
+ *           'optional' => TRUE | FALSE,
+ *           'type' => 'int' | 'string' | 'array',
+ *           'source' => array('path' => index_path [>0]) | 'data' | array('params' => 'nombre_del_parametro'),
+ *           'default value' => 'value',
+ *           'description' => 'Descripción del parámetro'
+ *     ),
+ *   ),
+ *   'access callback' = > '_FUNCION_QUE_COMPRUEBA_PERMISOS',
+ *   'access arguments' => array(),
+ *   'access arguments append' => TRUE | FALSE,
+ *   'help' => 'Texto descriptivo que aparecerá en la interfaz de configuración del servicio ',
+ * ),
+ *
+ * Para la explicación de los distintos índices del array que define la operación, los dividiré en negocio, parámetros y seguridad.
+ * El índice help se identifica por sí solo.
+ *
+ * 	- Negocio
+ * 		* file: indica el fichero donde se encuentra el callback que ejecutará la operación.
+ * 		* callback: función que se ejecuta cuando se invoca la operación.
+ * 	- Seguridad
+ * 		* access callback: función que se ejecuta para el procesamiento personalizado de la seguridad. Es útil si queremos definir
+ * 		  lógica de seguridad personalizada en el servicio, por ejemplo, que un usuario sólo pueda modificar el contenido que él ha creado.
+ * 		* access arguments append: indica si los argumentos de la operación son pasados a la función indicada en access callback.
+ * 		* access arguments: los argumentos que son pasados al callback.
+ *
+ * 		Por tanto, si tenemos una función _funcion_access que controlará los permisos de nuestras operaciones, recibirá dos parámetros:
+ * 		_function_access($access_arguments, $params), donde $access_arguments contiene el valor de 'access arguments' y $params los parámetros
+ * 		definidos en 'args' si el valor de 'access arguments append' es TRUE, y será null en caso de que este esté fijado en FALSE.
+ * 		Si no se definen los índices anteriores, se utilizará la función del core use_access para gestionar los permisos.
+ */
+
+function drucars_services_resources() {
+  return array(
+    'drucar' => array(
+      'retrieve' => array(
+        'file' => array('type' => 'inc', 'module' => 'drucars_services'),
+        'callback' => '_drucars_services_retrieve',
+          'args' => array(
+            array(
+              'name' => 'id',
+              'optional' => FALSE,
+              'type' => 'int',
+              'description' => 'The ID of the drucar to retrieve',
+              'source' => array('path' => 0),
+            ),
+          ),
+        'access callback' => '_drucars_services_access',
+        'access arguments' => array('view'),
+        'access arguments append' => TRUE,
+        'help' => 'Retrive a drucar'
+      ),
+
+      'index' => array(
+        'file' => array('type' => 'inc', 'module' => 'drucars_services'),
+        'callback' => '_drucars_services_index',
+        'access callback' => '_drucars_services_access',
+        'access arguments' => array('view'),
+        'access arguments append' => TRUE,
+      ),
+
+      'targeted_actions' => array(
+        'rent' => array(
+          'file' => array('type' => 'inc', 'module' => 'drucars_services'),
+          'callback' => '_drucars_services_rent',
+          'args' => array(
+            array(
+              'name' => 'id',
+              'optional' => FALSE,
+              'type' => 'int',
+              'source' => array('path' => 0),
+            ),
+          ),
+          'access callback' => '_drucars_services_access',
+          'access arguments' => array('update'),
+          'access arguments append' => TRUE,
+          'help' => 'Rent a drucar'
+        ),
+
+        'unrent' => array(
+          'file' => array('type' => 'inc', 'module' => 'drucars_services'),
+          'callback' => '_drucars_services_rent',
+          'args' => array(
+            array(
+              'name' => 'id',
+              'optional' => FALSE,
+              'type' => 'int',
+              'source' => array('path' => 0),
+            ),
+          ),
+          'access callback' => '_drucars_services_access',
+          'access arguments' => array('update'),
+          'access arguments append' => TRUE,
+          'help' => 'Unrent a drucar'
+        ),
+      ),
+
+  	  'actions' => array(
+        'rentAll' => array(
+          'file' => array('type' => 'inc', 'module' => 'drucars_services'),
+          'callback' => '_drucars_services_rentAll',
+          'access callback' => '_drucars_services_access',
+          'access arguments' => array('update'),
+          'access arguments append' => FALSE,
+          'help' => 'Rent all drucars'
+        ),
+      ),
+
+      'relationships'=> array(
+        'extras' => array(
+          'file' => array('type' => 'inc', 'module' => 'drucars_services'),
+          'callback' => '_drucars_services_extras',
+          'args' => array(
+            array(
+              'name' => 'id',
+              'optional' => FALSE,
+              'type' => 'int',
+              'source' => array('path' => 0),
+            ),
+          ),
+          'access callback' => '_drucars_services_access',
+          'access arguments' => array('view'),
+          'access arguments append' => TRUE,
+          'help' => 'Get extras for a drucar',
+        ),
+      ),
+    ),
+  );
+}
+
+
+/**
+ *
+ *	Esta es la función que se usa en el callback 'access callback' para controlar los permisos sobre los recursos.
+ *  $access_arguments recibe lo pasado en 'access arguments' y $params los parámetros
+ * 	definidos en 'args' si el valor de 'access arguments append' es TRUE, y será null en caso de que este esté fijado en FALSE.
+ *
+ * @param $op
+ * @param array $args
+ */
+
+function _drucars_services_access($access_arguments, $args = null) {
+  $access = TRUE;
+
+  switch($access_arguments) {
+    case 'update':
+      $access = user_access('Edit drucars items');
+      break;
+  }
+
+  return $access;
+
+}
+

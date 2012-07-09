@@ -1,0 +1,7 @@
+name = Drucars Services
+description = Exposes drucars funcionality through web service. Do not use this module in production environment. Its purpose it's academic only.
+core = 7.x
+package = monobits
+
+dependencies[] = services
+dependencies[] = drucars
