@@ -6,17 +6,10 @@
 function drucars_schema() {
   $schema = array();
 
-  // Cada esquema define uno o más índices, cada uno de los cuales
-  // generará una tabla en nuesta base de datos.
-  // Más info aquí: http://drupal.org/node/146939
   $schema['drucars'] = array(
     'description' => 'Table that stores cars info.',  
-    // Creamos un nuevo array en el índice fields
-    // En él definimos cada uno de los campos de nuestra tabla
     'fields' => array(
-      // De nuevo, cada campo es un índice que apunta a un nuevo array
       'cid' => array(
-        // Más info sobre los tipos aquí: http://drupal.org/node/159605
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
@@ -60,7 +53,7 @@ function drucars_schema() {
     'primary key' => array('cid'),
     'unique keys' => array(
       'license_plate' => array(
-        'license_plate'
+        'license_plate',
       ),
     ),
   );

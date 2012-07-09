@@ -4,7 +4,7 @@
  * Implements hook_permission().
  */
 function drucars_permission() {
-
+  
   $permission = array(
     'drucars view' => array(
       'title' => t('View drucars items'),
@@ -23,7 +23,7 @@ function drucars_permission() {
  * Implements hook_menu().
  */
 function drucars_menu() {
-
+  
   $items['drucars'] = array(
     'title' => 'Drucars',
     'page callback' => 'drucars_main_page',
@@ -31,10 +31,9 @@ function drucars_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => 'inc/drucars.ui.inc',
   );
-
+  
   $items['drucars/list'] = array(
     'title' => 'List cars',
-  'page callback' => 'drucars_main_page',
     'access arguments' => array('drucars view'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 0,
@@ -49,7 +48,7 @@ function drucars_menu() {
     'weight' => 1,
     'file' => 'inc/drucars.ui.inc',
   );
-
+  
   $items['drucars/%'] = array(
     'title' => 'Drucars',
     'title callback' => 'drucars_view_car_title',

@@ -24,8 +24,8 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
 
   if (!$car->isNew()) {
     $form['cid'] = array(
-      '#type' => 'hidden',
-      '#default_value' => $car->getCid(),
+      '#type' => 'value',
+      '#value' => $car->getCid(),
     );
   }
 
@@ -36,7 +36,7 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
     '#size' => 50,
     '#required' => TRUE,
     '#default_value' => $car->getModel(),
-  	'#description' => t('Brand and model of the car.'),
+    '#description' => t('Brand and model of the car.'),
   );
 
   $form['license_plate'] = array(
@@ -46,7 +46,7 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
     '#size' => 7,
     '#required' => TRUE,
     '#default_value' => $car->getLicensePlate(),
-  	'#description' => t('The license plate must has the spanish format (XXXXYYY).'),
+    '#description' => t('The license plate must has the spanish format (XXXXYYY).'),
   );
 
   $form['rented'] = array(
@@ -58,12 +58,12 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
     '#ajax' => array(
       'wrapper' => 'group_rented_wrapper', 
       'callback' => 'drucars_rented_checkbox_callback',
-  ),
+    ),
   );
 
   $form['group_rented'] = array(
     '#prefix' => '<div id="group_rented_wrapper">',
-  	'#suffix' => '</div>',
+    '#suffix' => '</div>',
   );
 
   if (!empty($form_state['values']['rented']) || !$form_state['rebuild'] && $car->isRented()) {
@@ -89,15 +89,15 @@ function drucars_edit_car_form($form, &$form_state, $cid = NULL) {
     $end_date = getdate($car->getEndDate());
 
     $form['group_rented']['end_date'] = array(
-  		'#title' => t('End date'),
-  		'#type' => 'date',
-  		'#required' => FALSE,
+      '#title' => t('End date'),
+      '#type' => 'date',
+      '#required' => FALSE,
       '#default_value' => array(
         'year' => $end_date['year'],
         'month' => $end_date['mon'],
         'day' => $end_date['mday'],
     ),
-  		'#description' => t('Select the ending rent date.'),
+      '#description' => t('Select the ending rent date.'),
     );
 
   }
@@ -157,12 +157,12 @@ function drucars_delete_car_form($form, &$form_state, $cid) {
 
   $form['cid'] = array(
     '#type' => 'value', 
-    '#value' => $cid
+    '#value' => $cid,
   );
   
   $form['delete'] = array(
     '#type' => 'value', 
-    '#value' => TRUE
+    '#value' => TRUE,
   );
   
   return confirm_form($form,
